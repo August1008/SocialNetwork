@@ -1,52 +1,61 @@
 ﻿using SocialNetwork.Models;
 using MongoDB.Driver;
+using SocialNetwork.DTOs;
+
 namespace SocialNetwork.Services
 {
     public class RegistrationService : IRegistrationService
     {
         private readonly IMongoCollection<Registration> _registrations;
-        public RegistrationService(ISocialNetworkDatabaseSetting setting, IMongoClient mongoClient) {
+        public RegistrationService(ISocialNetworkDatabaseSetting setting, IMongoClient mongoClient)
+        {
             var database = mongoClient.GetDatabase(setting.DatabaseName);
             _registrations = database.GetCollection<Registration>(setting.RegistrationCollection);
         }
-        public bool Create(Registration registration)
+        public async Task<Registration> Create(RegistrationDto dto)
         {
-            try
+            var registration = new Registration
             {
-                _registrations.InsertOne(registration);
-            } catch (Exception ex)
-            {
-                return false;
-            }
-            return true;
+                Email = dto.Email,
+                IsActive = dto.IsActive,
+                IsApproved = dto.IsApproved,
+                Name = dto.Name,
+                Password = dto.Password,
+                PhoneNumber = dto.PhoneNumber
+            };
+            await _registrations.InsertOneAsync(registration);
+            return registration;
         }
 
-        public IEnumerable<Registration> Get()
+        public async Task<IEnumerable<Registration>> Get()
         {
-            return _registrations.Find(registration => true).ToList();
+            return await _registrations.Find(registration => true).ToListAsync();
         }
 
-        public Registration GetById(string id)
+        public async Task<Registration> GetById(string id)
         {
-            return _registrations.Find(registration => registration.Id == id).FirstOrDefault();
+            return await _registrations.Find(registration => registration.Id == id).FirstOrDefaultAsync();
         }
 
-        public bool Remove(Registration registration)
+        public async Task RemoveAsync(string id)
         {
-            try
+            _ = await _registrations.DeleteOneAsync(regis => regis.Id == id);
+        }
+
+        public async Task<Registration> Update(RegistrationDto dto)
+        {
+            var registration = new Registration
             {
-                _registrations.DeleteOne(regis => regis.Id == registration.Id );
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-            return true;
-        }
-
-        public bool Update(Registration registration)
-        {
-            throw new NotImplementedException();
+                Id = dto.Id,
+                Email = dto.Email,
+                IsActive = dto.IsActive,
+                IsApproved = dto.IsApproved,
+                Name = dto.Name,
+                Password = dto.Password,
+                PhoneNumber = dto.PhoneNumber
+            };
+            await _registrations.ReplaceOneAsync(regis => regis.Id == dto.Id, registration);
+            return registration;
         }
     }
 }

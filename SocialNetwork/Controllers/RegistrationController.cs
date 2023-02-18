@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Amazon.Runtime.Internal;
+using Microsoft.AspNetCore.Mvc;
+using SocialNetwork.DTOs;
 using SocialNetwork.Models;
 using SocialNetwork.Services;
 using System.Collections;
+
 
 namespace SocialNetwork.Controllers
 {
@@ -18,9 +21,81 @@ namespace SocialNetwork.Controllers
         }
 
         [HttpGet("get_all")]
-        public ActionResult<List<Registration>> Get()
+        public async Task<IEnumerable<Registration>> Get()
         {
-            return _registrationService.Get().ToList();
+            return await _registrationService.Get();
+        }
+
+        [HttpGet("get/{id}")]
+        public async Task<IActionResult> Get(string id)
+        {
+            Registration? registration = null;
+            try
+            {
+                registration = await _registrationService.GetById(id);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return Ok(new
+            {
+                data = registration
+            });
+        }
+
+        [HttpPost("create")]
+        public async Task<IActionResult> Create(RegistrationDto registrationDto)
+        {
+            Registration? registration = null;
+            try
+            {
+                registration = _registrationService.Create(registrationDto).Result;
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return Ok(new
+            {
+                respone = true,
+                data = registration,
+                message = String.Format("Create new registration {0} successfully.", registrationDto.Email)
+            });
+        }
+
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> Delete(string id)
+        {
+            try
+            {
+                await _registrationService.RemoveAsync(id);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return Ok(new { respone = true, message = String.Format("Delete the registration {0} successfully.", id) });
+        }
+
+        [HttpPut("update")]
+        public async Task<IActionResult> Update(RegistrationDto registrationDto)
+        {
+            Registration? registration = null;
+            try
+            {
+                registration = _registrationService.Update(registrationDto).Result;
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            return Ok(new
+            {
+                respone = true,
+                data = registration,
+                message = String.Format("Update the registration {0} unsuccessfully", registrationDto.Email)
+            });
         }
     }
 }

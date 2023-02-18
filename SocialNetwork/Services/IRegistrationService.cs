@@ -1,14 +1,16 @@
-﻿using SocialNetwork.Models;
+﻿using MongoDB.Driver;
+using SocialNetwork.DTOs;
+using SocialNetwork.Models;
 
 namespace SocialNetwork.Services
 {
     public interface IRegistrationService
     {
-        IEnumerable<Registration> Get();
-        Registration GetById(string id);
-        bool Create(Registration registration);
-        bool Update(Registration registration);
-        bool Remove(Registration registration);
+        Task<IEnumerable<Registration>> Get();
+        Task<Registration> GetById(string id);
+        Task<Registration> Create(RegistrationDto dto);
+        Task<Registration> Update(RegistrationDto dto);
+        Task RemoveAsync(string id);
 
     }
 }

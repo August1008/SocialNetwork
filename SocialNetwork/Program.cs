@@ -15,6 +15,8 @@ builder.Services.AddSingleton<IMongoClient>(
 
 builder.Services.AddScoped<IRegistrationService,RegistrationService>();
 builder.Services.AddScoped<IArticleService, ArticleService>();
+builder.Services.AddScoped<IEventService, EventService>();
+builder.Services.AddScoped<INewService, NewService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

@@ -48,7 +48,7 @@ namespace SocialNetwork.Services
                 Content = dto.Content,
                 Email = dto.Email,
             };
-            await _articles.ReplaceOneAsync(a => a.Id.Equals(dto.Id), article);
+            await _articles.ReplaceOneAsync(a => a.Id.Equals(article.Id), article);
             return Task.FromResult(article).Result;
         }
     }

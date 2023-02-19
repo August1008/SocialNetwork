@@ -14,6 +14,8 @@ builder.Services.AddSingleton<IMongoClient>(
     s => new MongoClient(builder.Configuration.GetValue<string>("SocialNetworkDatabase:ConnectionString")));
 
 builder.Services.AddScoped<IRegistrationService,RegistrationService>();
+builder.Services.AddScoped<IArticleService, ArticleService>();
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

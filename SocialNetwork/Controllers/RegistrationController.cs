@@ -45,7 +45,7 @@ namespace SocialNetwork.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> Create(RegistrationDto registrationDto)
+        public async Task<IActionResult> Create([FromBody]RegistrationDto registrationDto)
         {
             Registration? registration = null;
             try

@@ -8,6 +8,7 @@ namespace SocialNetwork.Services
     {
         Task<IEnumerable<Registration>> Get();
         Task<Registration> GetById(string id);
+        Task<Registration> GetByUsernameAndPasswordAsync(string email, string password);
         Task<Registration> Create(RegistrationDto dto);
         Task<Registration> Update(RegistrationDto dto);
         Task RemoveAsync(string id);

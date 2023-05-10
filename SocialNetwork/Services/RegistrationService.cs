@@ -37,6 +37,13 @@ namespace SocialNetwork.Services
             return await _registrations.Find(registration => registration.Id == id).FirstOrDefaultAsync();
         }
 
+        public async Task<Registration> GetByUsernameAndPasswordAsync(string email,string password)
+        {
+            return await _registrations
+                .Find(registration => registration.Email == email && registration.Password == password)
+                .FirstOrDefaultAsync();
+        }
+
         public async Task RemoveAsync(string id)
         {
             _ = await _registrations.DeleteOneAsync(regis => regis.Id == id);

@@ -1,6 +1,7 @@
 ﻿using Amazon.Runtime.Internal;
 using Microsoft.AspNetCore.Mvc;
 using SocialNetwork.DTOs;
+using SocialNetwork.DTOs.APIModels;
 using SocialNetwork.Models;
 using SocialNetwork.Services;
 using System.Collections;
@@ -20,6 +21,16 @@ namespace SocialNetwork.Controllers
             this._registrationService = registrationService;
         }
 
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(LoginModel loginModel)
+        {
+            var user = _registrationService.GetByUsernameAndPasswordAsync(loginModel.email, loginModel.password).Result;
+            return Ok(new
+            {
+                success = user != null,
+                User = user
+            });
+        }
         [HttpGet("get_all")]
         public async Task<IEnumerable<Registration>> Get()
         {
